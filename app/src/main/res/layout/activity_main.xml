@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.huzaifa.iftikhar.imagesearch.MainActivity">
+
+    <EditText
+        android:id="@+id/edtSearch"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:imeOptions="actionSearch"
+        android:drawableLeft="@drawable/ic_search"
+        android:drawablePadding="5dp"
+        android:hint="Search Images"
+        android:inputType="text" />
+
+    <GridView
+        android:id="@+id/gvResults"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/edtSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numColumns="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

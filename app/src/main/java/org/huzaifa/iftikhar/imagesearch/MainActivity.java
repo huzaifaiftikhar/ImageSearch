@@ -10,10 +10,12 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,11 +40,14 @@ public class MainActivity extends AppCompatActivity {
     GridView gridView;
     @BindView(R.id.edtSearch)
     EditText etSearch;
+    @BindView(R.id.progressbar)
+    ProgressBar progressBar;
     SearchClient client;
     ImageResultArrayAdapter imageAdapter;
     ArrayList<ImageResult> imageResults;
     private int startPage = 1;
     private String query;
+    private int MAX_PAGE = 10;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -91,11 +96,21 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        gridView.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                if (page <= MAX_PAGE) {
+                    searchImage((10 * (page - 1)) + 1);
+                }
+            }
+        });
     }
 
     private void searchImage(int page) {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
         if (isNetworkAvailable()) {
             client = new SearchClient();
             query = etSearch.getText().toString();
@@ -104,9 +119,11 @@ public class MainActivity extends AppCompatActivity {
                 imageAdapter.clear();
 
             if (!query.equals("")) {
+                progressBar.setVisibility(View.VISIBLE);
                 client.getSearch(query, startPage, this, new JsonHttpResponseHandler() {
                             @Override
                             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                                progressBar.setVisibility(View.GONE);
                                 try {
                                     JSONArray imageJsonResults;
                                     if (response != null) {
@@ -121,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
                             @Override
                             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                                progressBar.setVisibility(View.GONE);
                                 super.onFailure(statusCode, headers, responseString, throwable);
                                 Toast.makeText(getApplicationContext(), R.string.service_unavailable, Toast.LENGTH_SHORT).show();
                             }

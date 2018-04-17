@@ -6,4 +6,5 @@
     <string name="invalid_data">Invalid data received</string>
     <string name="service_unavailable">Service unavailable</string>
     <string name="invalid_query">Invalid query</string>
+    <string name="search_images">Search Images</string>
 </resources>
